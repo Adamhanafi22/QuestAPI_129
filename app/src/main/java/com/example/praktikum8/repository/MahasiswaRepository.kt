@@ -4,6 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.example.praktikum8.model.Mahasiswa
 import com.example.praktikum8.service_api.MahasiswaService
+import java.io.IOException
 
 interface MahasiswaRepository{
 
@@ -21,24 +22,35 @@ interface MahasiswaRepository{
 class NetworkMahasiswaRepository(
     private val MahasiswaApiService: MahasiswaService
 ): MahasiswaRepository {
+    override suspend fun getMahasiswa(): List<Mahasiswa> =
+        MahasiswaApiService.getAllMahasiswa()
 
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
 
+    override suspend fun insertMahasiswa(mahasiswa: Mahasiswa) {
+        MahasiswaApiService.insertMahasiswa(mahasiswa)
     }
 
-    override fun describeContents(): Int {
-        return 0
+    override suspend fun updateMahasiswa(nim: String, mahasiswa: Mahasiswa) {
+        MahasiswaApiService.updateMahasiswa(nim, mahasiswa)
     }
 
-    companion object CREATOR : Parcelable.Creator<NetworkMahasiswaRepository> {
-        override fun createFromParcel(parcel: Parcel): NetworkMahasiswaRepository {
-            return NetworkMahasiswaRepository(parcel)
+    override suspend fun deleteMahasiswa(nim: String) {
+        try {
+            val response = MahasiswaApiService.deleteMahasiswa(nim)
+            if (!response.isSuccessful) {
+                throw IOException(
+                    "Failed to delete Mahasiswa. HTTP Status Code: ${response.code()}"
+                )
+            } else {
+                println(response.message())
+            }
+        } catch (e: Exception) {
+            throw e
         }
-
-        override fun newArray(size: Int): Array<NetworkMahasiswaRepository?> {
-            return arrayOfNulls(size)
-        }
-
-
     }
+
+    override suspend fun getMahasiswabyNim(nim: String): Mahasiswa {
+        return MahasiswaApiService.getMahasiswabyNim(nim)
+    }
+
 }
