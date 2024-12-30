@@ -2,6 +2,7 @@ package com.example.praktikum8.ui.home.screen
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
@@ -17,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.praktikum8.model.Mahasiswa
 import com.example.praktikum8.navigaton.DestinasiNavigasi
+import com.example.praktikum8.ui.home.viewmodel.DetailUiState
 
 object DestinasiDetail : DestinasiNavigasi {
     override val route = "Detail"
@@ -24,6 +26,44 @@ object DestinasiDetail : DestinasiNavigasi {
     const val NIM = "nim"
     val routeWithArg = "$route/{$NIM}"
 }
+
+@Composable
+fun BodyDetailMhs(
+    modifier: Modifier = Modifier,
+    detailUiState: DetailUiState,
+    retryAction: () -> Unit = {}
+) {
+    when (detailUiState) {
+        is DetailUiState.Loading -> {
+            // Menampilkan gambar loading saat data sedang dimuat
+            OnLoading(modifier = modifier.fillMaxSize())
+        }
+        is DetailUiState.Success -> {
+            // Menampilkan detail mahasiswa jika berhasil
+            Column(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                AtributDetailMhs(mahasiswa = detailUiState.mahasiswa)
+            }
+        }
+        is DetailUiState.Error -> {
+            // Menampilkan error jika data gagal dimuat
+            OnError(
+                retryAction = retryAction,
+                modifier = modifier.fillMaxSize()
+            )
+        }
+        else -> {
+
+            Text("Unexpected state encountered")
+        }
+    }
+
+}
+
+
 
 @Composable
 fun AtributDetailMhs(
