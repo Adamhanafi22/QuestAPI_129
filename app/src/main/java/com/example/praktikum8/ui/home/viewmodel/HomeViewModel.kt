@@ -1,6 +1,7 @@
-package com.example.praktikum8.ui.viewmodel
+package com.example.praktikum8.ui.home.viewmodel
 
-import android.net.http.HttpException
+
+import coil.network.HttpException
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -18,7 +19,7 @@ sealed class HomeUiState {
 }
 
 class HomeViewModel (private val mhs: MahasiswaRepository): ViewModel(){
-    var mhsUIState:HomeUiState by mutableStateOf(HomeUiState.Loading)
+    var mhsUIState: HomeUiState by mutableStateOf(HomeUiState.Loading)
         private set
 
     init {
@@ -29,10 +30,10 @@ class HomeViewModel (private val mhs: MahasiswaRepository): ViewModel(){
         viewModelScope.launch {
             mhsUIState = HomeUiState.Loading
             mhsUIState = try {
-                HomeUiState.Success(mhs.getMahasiswa())
+                HomeUiState.Success(mhs.getAllMahasiswa())
             }catch (e: IOException){
                 HomeUiState.Error
-            }catch (e: HttpException){
+            }catch ( e: HttpException){
                 HomeUiState.Error
             }
         }
@@ -41,10 +42,10 @@ class HomeViewModel (private val mhs: MahasiswaRepository): ViewModel(){
     fun deleteMhs(nim:String){
         viewModelScope.launch {
             try {
-                mhs.deleteMahasiswa(nim)
+                mhs.deletedMahasiswa(nim)
             }catch (e: IOException){
                 HomeUiState.Error
-            }catch (e:HttpException){
+            }catch ( e:HttpException){
                 HomeUiState.Error
             }
         }

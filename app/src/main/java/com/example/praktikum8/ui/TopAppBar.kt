@@ -1,5 +1,6 @@
 package com.example.praktikum8.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Refresh
@@ -10,7 +11,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
-import java.lang.reflect.Modifier
+import androidx.compose.ui.Modifier
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

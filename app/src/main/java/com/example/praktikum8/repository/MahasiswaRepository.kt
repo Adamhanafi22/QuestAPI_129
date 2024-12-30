@@ -8,7 +8,7 @@ import java.io.IOException
 
 interface MahasiswaRepository{
 
-    suspend fun getMahasiswa(): List<Mahasiswa>
+    suspend fun getAllMahasiswa(): List<Mahasiswa>
 
     suspend fun insertMahasiswa(mahasiswa: Mahasiswa)
 
@@ -16,13 +16,13 @@ interface MahasiswaRepository{
 
     suspend fun deletedMahasiswa(nim: String)
 
-    suspend fun getMahasiswa(nim: String): Mahasiswa
+    suspend fun getMahasiswaByNim(nim: String): Mahasiswa
 }
 
 class NetworkMahasiswaRepository(
     private val MahasiswaApiService: MahasiswaService
 ): MahasiswaRepository {
-    override suspend fun getMahasiswa(): List<Mahasiswa> =
+    override suspend fun getAllMahasiswa(): List<Mahasiswa> =
         MahasiswaApiService.getAllMahasiswa()
 
 
@@ -34,7 +34,7 @@ class NetworkMahasiswaRepository(
         MahasiswaApiService.updateMahasiswa(nim, mahasiswa)
     }
 
-    override suspend fun deleteMahasiswa(nim: String) {
+    override suspend fun deletedMahasiswa(nim: String) {
         try {
             val response = MahasiswaApiService.deleteMahasiswa(nim)
             if (!response.isSuccessful) {
@@ -42,6 +42,7 @@ class NetworkMahasiswaRepository(
                     "Failed to delete Mahasiswa. HTTP Status Code: ${response.code()}"
                 )
             } else {
+                response.message()
                 println(response.message())
             }
         } catch (e: Exception) {
@@ -49,7 +50,7 @@ class NetworkMahasiswaRepository(
         }
     }
 
-    override suspend fun getMahasiswabyNim(nim: String): Mahasiswa {
+    override suspend fun getMahasiswaByNim(nim: String): Mahasiswa {
         return MahasiswaApiService.getMahasiswabyNim(nim)
     }
 
